@@ -168,8 +168,40 @@ TCP는 다음과 같이 동작한다.
 
 위와 같은 방법으로 TCP는 프로토콜 스택을 통해 알맞은 어플리케이션으로 이동하는 데이터를 라우트한다.
 
-TCP는 문서적인 프로토콜이 아니다. **TCP는 연결 지향적이고 신뢰할 수 있는(reliable) 바이트스트림 서비스다.** 연결 지향은 TCP를 사용하는 두 어플리케이션은 데이터를 교환하기 전에 먼저 연결을 설정해야 함을 의미한다. 받는 패킷마다 전송을 확인하기 위한 확인 메시지가 발신자에게 보내지기 때문에 TCP는 신뢰할 수 있다.
+TCP는 문서적인 프로토콜이 아니다. **TCP는 연결 지향적이고 신뢰할 수 있는(reliable) 바이트스트림 서비스다.** 연결 지향은 TCP를 사용하는 두 어플리케이션은 데이터를 교환하기 전에 먼저 연결을 설정해야 함을 의미한다. 받는 패킷마다 전송을 확인하기 위한 확인 메시지가 발신자에게 보내지기 때문에 TCP는 신뢰할 수 있다. TCP는 받은 데이터를 에러 체크하기 위한 체크섬 또한 TCP의 헤더에 추가한다. TCP 헤더는 다음처럼 생겼다.
+
+![Diagram 7 of [http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm](http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm)](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/e1d5ee51-84f2-42df-a47d-efbe1a94b217/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220131%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220131T144908Z&X-Amz-Expires=86400&X-Amz-Signature=a0cff8c2b36fae31f8c6408ea0c5a340ca66bcd74715e6808c819f6e70ffc0a7&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
+
+Diagram 7 of [http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm](http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm)
+
+TCP 헤더에는 IP 주소를 위한 공간은 없다. TCP는 IP 주소에 대한 어떤 것도 알지 못한다. TCP의 역할은 어플리케이션 레벨 데이터를 안정적으로(reliably) 어플리케이션에서 어플리케이션으로 보내는 것이다. 컴퓨터에서 컴퓨터로 데이터를 보내는 것은 IP의 역할이다.
+
+> 일반적으로 사용되는 인터넷 서비스의 포트 넘버들
+FTP - 20/21
+Telnet - 23
+SMTP - 25
+HTTP - 80
+Quake III Arena - 27960
+> 
 
 ## Internet Protocol
 
+TCP와 달리 **IP는 신뢰할 수 없는 비연결형 프로토콜**이다. IP는 패킷이 목적지에 도착하는지에 대한 여부를 신경 쓰지 않는다. IP는 연결과 포트 넘버에 대해서도 모른다. **IP의 역할은 패킷을 다른 컴퓨터로 보내고 라우트하는 것이다.** IP 패킷은 독립적인 엔터티이며 순서가 맞지 않거나 아예 도착하지 않을 수도 있다. 패킷이 도착하고 올바른 순서로 있는지 확인하는 것은 TCP의 역할이다. IP가 TCP와 유일하게 같은 점은 데이터를 받고 IP 헤더 정보를 TCP 데이터에 추가하는 방식이다. IP 헤더는 다음처럼 생겼다.
+
+![Diagram 8 of [http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm](http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm)](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/0114d99b-4bcf-4e96-a344-1114d9ff0d82/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220131%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220131T143449Z&X-Amz-Expires=86400&X-Amz-Signature=be3e099a30f30827e125add9ec9f90aefcdac192aa9ac6116cc46605d5467ec2&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
+
+Diagram 8 of [http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm](http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm)
+
+위 그림에서 IP 헤더에서 송신, 수신 컴퓨터의 IP 주소를 확인할 수 있다. 아래는 어플리케이션 계층을 지나, TCP 계층을 지나, IP 계층을 지난 후의 패킷의 모습이다. 어플리케이션 계층 데이터는 TCP 계층에서 나뉘고, TCP 헤더가 추가된다. 패킷은 IP 계층으로 이동한 뒤 IP 헤더가 추가된다. 그 후 패킷은 인터넷을 통해 전송된다.
+
+![Diagram 8 of [http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm](http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm)](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/f7e5f991-cb73-481f-9c25-92ffca4592cb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220131%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220131T144129Z&X-Amz-Expires=86400&X-Amz-Signature=31512717f346582d8db2ba7da547340f4334561cd860e3282c7ef24bc05b7e79&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
+
+Diagram 8 of [http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm](http://web.stanford.edu/class/msande91si/www-spr04/readings/week1/InternetWhitepaper.htm)
+
 ## Wrap Up
+
+인터넷이 어떻게 작동하는지 알아보았다. 현재 IP 버전인 IPv4는 2^32개의 주소만 사용할 수 있다. 결국엔 모든 주소가 다 사용되고 말 것이다. IPv6가 연구 및 테스트 중에 있다.(2022년이지만 아직 IPv6는 표준으로 사용되고 있지는 않다.) 그 다음은 어떻게 될까? 인터넷은 미 국방부의 연구 프로젝트로서 시작된 후로 먼 길을 왔다. 인터넷이 어떻게 될지는 아무도 모른다. 하지만 한 가지는 확실하다. 인터넷은 다른 어떤 메커니즘도 이루어내지 못한 방식으로 세상을 통합할 것이다. 정보화 시대가 한창 진행 중이며 그 일부가 된 것을 기쁘게 생각한다.
+
+Rus Shuler, 1998
+
+Updates made 2002
